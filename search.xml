@@ -29,31 +29,6 @@
     
     
     <entry>
-      <title>企业微信： 图片附件无法预览的问题</title>
-      <link href="//post/2022-04-19wework-preview.html"/>
-      <url>//post/2022-04-19wework-preview.html</url>
-      
-        <content type="html"><![CDATA[<p><img src="http://t-blog-images.aijs.top/img/11460713-13685d46ead24558.png"></p><ul><li>背景：安卓预览正常，部分iOS预览有问题（大部分手机都是正常的）<pre class="line-numbers language-none"><code class="language-none">downloadAttachment(downloadUrl).then(res &#x3D;&gt; &#123;      if (getWechatUserAgent(navigator.userAgent)) &#123; &#x2F;&#x2F; 判断是企业微信        const blob &#x3D; new Blob([res]);        wx.previewFile(&#123;          url: location.origin + downloadUrl, &#x2F;&#x2F; 需要预览文件的地址(必填，可以使用相对路径)          name: attachment.name, &#x2F;&#x2F; 需要预览文件的文件名，必须有带文件格式的后缀，例如.doc(不填的话取url的最后部分，最后部分是个包含格式后缀的文件名)          size: blob.size &#x2F;&#x2F; 需要预览文件的字节大小(必填，而且大小必须正确，否则会打开失败)        &#125;);        Toast.loading(i18n.loading, false)        return      &#125;      var reader &#x3D; new FileReader();      reader.readAsDataURL(res);   &#x2F;&#x2F; 转换为base64，可以直接放入a标签href      reader.onload &#x3D; function (e) &#123;        const anchorEle &#x3D; document.createElement(&#39;a&#39;)        document.body.appendChild(anchorEle)        anchorEle.href &#x3D; e?.target?.result as any        anchorEle.download &#x3D; attachment.name        anchorEle.click()        document.body.removeChild(anchorEle)      &#125;      Toast.loading(i18n.loading, false)    &#125;).catch(() &#x3D;&gt; &#123;      Toast.loading(i18n.loading, false)    &#125;)</code></pre><code>自研移动端</code>、<code>web端</code>、<code>企业微信桌面端</code>都没问题，当然喽，每一个端展示效果是不一样的，代码也不一样。排查了耗费一定时间。</li></ul><ol><li>排查 企业微信版本， 比对后发现，和正常使用的微信版本一致</li><li>排查手机版本不一致，客户iphone12和 系统版本15.1，我们开发人员是14.+，所以我把我的手机升级到最新，我的手机升级后是正常的，那么可能是数据问题，数据</li><li>排查数据，这是老系统的数据，和新系统数据走不同的业务代码，经排查也没问题</li><li>排查<code>size</code>如果不准确也会出现上述问题，由于预发环境获取票据的信息与线上是不一致的，所以无法在预发进行排查，能做的事保证代码执行到<code> const blob = new Blob([res]);</code>，并且能够获取到正确的size，所以进行了alert调试，这个在手机上比较直观，当然也可以<code>vconsole</code>【暂不考虑,因为之前开发人员没加，部门被砍掉，很多人被裁员了，所有项目都我来维护，没时间，不整了】，调试结果是size: 88214,各个手机都一样，用户手机也是88214，故排除size</li><li>最后可能问题在于，用户手机上版本与手机不匹配，有兼容性bug，尝试升级企业微信，最后解决</li></ol><br/><p>总结：如果考虑直接升级用户app版本，或许在第三步就解决问题了，我的iphoneX也不用升级到15.3了</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> 企业微信 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 企业微信 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>vite react antd</title>
       <link href="//post/2022-09-07vite-react.html"/>
       <url>//post/2022-09-07vite-react.html</url>
@@ -2025,11 +2000,11 @@
     
     
     <entry>
-      <title>再学Vue3-8 typescript</title>
-      <link href="//post/2022-06-02vue-8.html"/>
-      <url>//post/2022-06-02vue-8.html</url>
+      <title>再学Vue3-7 最佳实践</title>
+      <link href="//post/2022-06-02vue-7.html"/>
+      <url>//post/2022-06-02vue-7.html</url>
       
-        <content type="html"><![CDATA[<h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><img src="http://t-blog-images.aijs.top/img/20220602201338.webp" style="max-width:240px" /><p><img src="http://t-blog-images.aijs.top/img/20220602201222.webp"></p><h3 id="组合式"><a href="#组合式" class="headerlink" title="组合式"></a>组合式</h3><p><img src="http://t-blog-images.aijs.top/img/20220602201022.webp"></p><h3 id="选项式"><a href="#选项式" class="headerlink" title="选项式"></a>选项式</h3><p><img src="http://t-blog-images.aijs.top/img/20220602201032.webp"></p>]]></content>
+        <content type="html"><![CDATA[<h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><img src="http://t-blog-images.aijs.top/img/20220602201338.webp" style="max-width:240px" /><p><img src="http://t-blog-images.aijs.top/img/20220602200611.webp"></p><h3 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h3><p><img src="http://t-blog-images.aijs.top/img/20220602200621.webp"></p><h3 id="安全"><a href="#安全" class="headerlink" title="安全"></a>安全</h3><p><img src="http://t-blog-images.aijs.top/img/20220602200638.webp"></p>]]></content>
       
       
       <categories>
@@ -2050,11 +2025,11 @@
     
     
     <entry>
-      <title>再学Vue3-7 最佳实践</title>
-      <link href="//post/2022-06-02vue-7.html"/>
-      <url>//post/2022-06-02vue-7.html</url>
+      <title>再学Vue3-8 typescript</title>
+      <link href="//post/2022-06-02vue-8.html"/>
+      <url>//post/2022-06-02vue-8.html</url>
       
-        <content type="html"><![CDATA[<h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><img src="http://t-blog-images.aijs.top/img/20220602201338.webp" style="max-width:240px" /><p><img src="http://t-blog-images.aijs.top/img/20220602200611.webp"></p><h3 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h3><p><img src="http://t-blog-images.aijs.top/img/20220602200621.webp"></p><h3 id="安全"><a href="#安全" class="headerlink" title="安全"></a>安全</h3><p><img src="http://t-blog-images.aijs.top/img/20220602200638.webp"></p>]]></content>
+        <content type="html"><![CDATA[<h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><img src="http://t-blog-images.aijs.top/img/20220602201338.webp" style="max-width:240px" /><p><img src="http://t-blog-images.aijs.top/img/20220602201222.webp"></p><h3 id="组合式"><a href="#组合式" class="headerlink" title="组合式"></a>组合式</h3><p><img src="http://t-blog-images.aijs.top/img/20220602201022.webp"></p><h3 id="选项式"><a href="#选项式" class="headerlink" title="选项式"></a>选项式</h3><p><img src="http://t-blog-images.aijs.top/img/20220602201032.webp"></p>]]></content>
       
       
       <categories>
@@ -3183,6 +3158,31 @@
         <tags>
             
             <tag> bug </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>企业微信： 图片附件无法预览的问题</title>
+      <link href="//post/2022-04-19wework-preview.html"/>
+      <url>//post/2022-04-19wework-preview.html</url>
+      
+        <content type="html"><![CDATA[<p><img src="http://t-blog-images.aijs.top/img/11460713-13685d46ead24558.png"></p><ul><li>背景：安卓预览正常，部分iOS预览有问题（大部分手机都是正常的）<pre class="line-numbers language-none"><code class="language-none">downloadAttachment(downloadUrl).then(res &#x3D;&gt; &#123;      if (getWechatUserAgent(navigator.userAgent)) &#123; &#x2F;&#x2F; 判断是企业微信        const blob &#x3D; new Blob([res]);        wx.previewFile(&#123;          url: location.origin + downloadUrl, &#x2F;&#x2F; 需要预览文件的地址(必填，可以使用相对路径)          name: attachment.name, &#x2F;&#x2F; 需要预览文件的文件名，必须有带文件格式的后缀，例如.doc(不填的话取url的最后部分，最后部分是个包含格式后缀的文件名)          size: blob.size &#x2F;&#x2F; 需要预览文件的字节大小(必填，而且大小必须正确，否则会打开失败)        &#125;);        Toast.loading(i18n.loading, false)        return      &#125;      var reader &#x3D; new FileReader();      reader.readAsDataURL(res);   &#x2F;&#x2F; 转换为base64，可以直接放入a标签href      reader.onload &#x3D; function (e) &#123;        const anchorEle &#x3D; document.createElement(&#39;a&#39;)        document.body.appendChild(anchorEle)        anchorEle.href &#x3D; e?.target?.result as any        anchorEle.download &#x3D; attachment.name        anchorEle.click()        document.body.removeChild(anchorEle)      &#125;      Toast.loading(i18n.loading, false)    &#125;).catch(() &#x3D;&gt; &#123;      Toast.loading(i18n.loading, false)    &#125;)</code></pre><code>自研移动端</code>、<code>web端</code>、<code>企业微信桌面端</code>都没问题，当然喽，每一个端展示效果是不一样的，代码也不一样。排查了耗费一定时间。</li></ul><ol><li>排查 企业微信版本， 比对后发现，和正常使用的微信版本一致</li><li>排查手机版本不一致，客户iphone12和 系统版本15.1，我们开发人员是14.+，所以我把我的手机升级到最新，我的手机升级后是正常的，那么可能是数据问题，数据</li><li>排查数据，这是老系统的数据，和新系统数据走不同的业务代码，经排查也没问题</li><li>排查<code>size</code>如果不准确也会出现上述问题，由于预发环境获取票据的信息与线上是不一致的，所以无法在预发进行排查，能做的事保证代码执行到<code> const blob = new Blob([res]);</code>，并且能够获取到正确的size，所以进行了alert调试，这个在手机上比较直观，当然也可以<code>vconsole</code>【暂不考虑,因为之前开发人员没加，部门被砍掉，很多人被裁员了，所有项目都我来维护，没时间，不整了】，调试结果是size: 88214,各个手机都一样，用户手机也是88214，故排除size</li><li>最后可能问题在于，用户手机上版本与手机不匹配，有兼容性bug，尝试升级企业微信，最后解决</li></ol><br/><p>总结：如果考虑直接升级用户app版本，或许在第三步就解决问题了，我的iphoneX也不用升级到15.3了</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 企业微信 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 企业微信 </tag>
             
         </tags>
       
