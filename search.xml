@@ -2075,11 +2075,11 @@
     
     
     <entry>
-      <title>再学Vue3-8 typescript</title>
-      <link href="//post/2022-06-02vue-8.html"/>
-      <url>//post/2022-06-02vue-8.html</url>
+      <title>再学Vue3-7 最佳实践</title>
+      <link href="//post/2022-06-02vue-7.html"/>
+      <url>//post/2022-06-02vue-7.html</url>
       
-        <content type="html"><![CDATA[<h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><img src="http://t-blog-images.aijs.top/img/20220602201338.webp" style="max-width:240px" /><p><img src="http://t-blog-images.aijs.top/img/20220602201222.webp"></p><h3 id="组合式"><a href="#组合式" class="headerlink" title="组合式"></a>组合式</h3><p><img src="http://t-blog-images.aijs.top/img/20220602201022.webp"></p><h3 id="选项式"><a href="#选项式" class="headerlink" title="选项式"></a>选项式</h3><p><img src="http://t-blog-images.aijs.top/img/20220602201032.webp"></p>]]></content>
+        <content type="html"><![CDATA[<h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><img src="http://t-blog-images.aijs.top/img/20220602201338.webp" style="max-width:240px" /><p><img src="http://t-blog-images.aijs.top/img/20220602200611.webp"></p><h3 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h3><p><img src="http://t-blog-images.aijs.top/img/20220602200621.webp"></p><h3 id="安全"><a href="#安全" class="headerlink" title="安全"></a>安全</h3><p><img src="http://t-blog-images.aijs.top/img/20220602200638.webp"></p>]]></content>
       
       
       <categories>
@@ -2100,11 +2100,11 @@
     
     
     <entry>
-      <title>再学Vue3-7 最佳实践</title>
-      <link href="//post/2022-06-02vue-7.html"/>
-      <url>//post/2022-06-02vue-7.html</url>
+      <title>再学Vue3-8 typescript</title>
+      <link href="//post/2022-06-02vue-8.html"/>
+      <url>//post/2022-06-02vue-8.html</url>
       
-        <content type="html"><![CDATA[<h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><img src="http://t-blog-images.aijs.top/img/20220602201338.webp" style="max-width:240px" /><p><img src="http://t-blog-images.aijs.top/img/20220602200611.webp"></p><h3 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h3><p><img src="http://t-blog-images.aijs.top/img/20220602200621.webp"></p><h3 id="安全"><a href="#安全" class="headerlink" title="安全"></a>安全</h3><p><img src="http://t-blog-images.aijs.top/img/20220602200638.webp"></p>]]></content>
+        <content type="html"><![CDATA[<h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><img src="http://t-blog-images.aijs.top/img/20220602201338.webp" style="max-width:240px" /><p><img src="http://t-blog-images.aijs.top/img/20220602201222.webp"></p><h3 id="组合式"><a href="#组合式" class="headerlink" title="组合式"></a>组合式</h3><p><img src="http://t-blog-images.aijs.top/img/20220602201022.webp"></p><h3 id="选项式"><a href="#选项式" class="headerlink" title="选项式"></a>选项式</h3><p><img src="http://t-blog-images.aijs.top/img/20220602201032.webp"></p>]]></content>
       
       
       <categories>
@@ -2422,9 +2422,9 @@
       
         <tags>
             
-            <tag> 增效 </tag>
-            
             <tag> 工具 </tag>
+            
+            <tag> 增效 </tag>
             
             <tag> vscode </tag>
             
@@ -3407,9 +3407,9 @@
       
         <tags>
             
-            <tag> 增效 </tag>
-            
             <tag> 工具 </tag>
+            
+            <tag> 增效 </tag>
             
             <tag> vscode </tag>
             
@@ -3539,33 +3539,6 @@
     
     
     <entry>
-      <title>批量删除目录</title>
-      <link href="//post/2019-10-30shell.html"/>
-      <url>//post/2019-10-30shell.html</url>
-      
-        <content type="html"><![CDATA[<h2 id="删除某个目录下所有子目录的-node-modules"><a href="#删除某个目录下所有子目录的-node-modules" class="headerlink" title="删除某个目录下所有子目录的 node_modules"></a>删除某个目录下所有子目录的 node_modules</h2><ul><li>查找 &#x2F;tmp&#x2F;test&#x2F; 子目录下所有 modu 执行删除</li></ul><pre class="line-numbers language-none"><code class="language-none">find &#x2F;tmp&#x2F;test&#x2F; -type d -name modu |xargs rm -rf</code></pre><ul><li>查找 &#x2F;tmp&#x2F;test&#x2F; 子目录下所有 node_modules 执行删除</li></ul><pre class="line-numbers language-none"><code class="language-none">find &#x2F;tmp&#x2F;test&#x2F; -type d -name node_modules |xargs rm -rf</code></pre><ul><li>查找 当前目录下 子目录下所有 node_modules 执行删除</li></ul><pre class="line-numbers language-none"><code class="language-none">find .&#x2F; -type d -name node_modules |xargs rm -rf</code></pre><p><a href="https://www.cnblogs.com/w-j-q/p/14863810.html" target="_blank" >见 find 命令</a></p>]]></content>
-      
-      
-      <categories>
-          
-          <category> 工具 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> Shell </tag>
-            
-            <tag> 增效 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>MAC Iterm2美化终端</title>
       <link href="//post/2017-07-09item2.html"/>
       <url>//post/2017-07-09item2.html</url>
@@ -3582,9 +3555,36 @@
       
         <tags>
             
+            <tag> 工具 </tag>
+            
             <tag> 增效 </tag>
             
-            <tag> 工具 </tag>
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>批量删除目录</title>
+      <link href="//post/2019-10-30shell.html"/>
+      <url>//post/2019-10-30shell.html</url>
+      
+        <content type="html"><![CDATA[<h2 id="删除某个目录下所有子目录的-node-modules"><a href="#删除某个目录下所有子目录的-node-modules" class="headerlink" title="删除某个目录下所有子目录的 node_modules"></a>删除某个目录下所有子目录的 node_modules</h2><ul><li>查找 &#x2F;tmp&#x2F;test&#x2F; 子目录下所有 modu 执行删除</li></ul><pre class="line-numbers language-none"><code class="language-none">find &#x2F;tmp&#x2F;test&#x2F; -type d -name modu |xargs rm -rf</code></pre><ul><li>查找 &#x2F;tmp&#x2F;test&#x2F; 子目录下所有 node_modules 执行删除</li></ul><pre class="line-numbers language-none"><code class="language-none">find &#x2F;tmp&#x2F;test&#x2F; -type d -name node_modules |xargs rm -rf</code></pre><ul><li>查找 当前目录下 子目录下所有 node_modules 执行删除</li></ul><pre class="line-numbers language-none"><code class="language-none">find .&#x2F; -type d -name node_modules |xargs rm -rf</code></pre><p><a href="https://www.cnblogs.com/w-j-q/p/14863810.html" target="_blank" >见 find 命令</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 工具 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 增效 </tag>
+            
+            <tag> Shell </tag>
             
         </tags>
       
