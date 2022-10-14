@@ -29,6 +29,56 @@
     
     
     <entry>
+      <title>react-router-dom useSearchParams</title>
+      <link href="//post/2022-10-14useSearchParams.html"/>
+      <url>//post/2022-10-14useSearchParams.html</url>
+      
+        <content type="html"><![CDATA[<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p><strong>需求</strong></p><p>列表切换详情，返回列表，要求查询表单参数不丢失，</p><p><strong>思路</strong></p><ul><li>记录参数到url上，在记录的过程中，列表页面不刷新</li><li>返回时候列表页只作为一个history 栈中的一个记录</li></ul><p><strong>MDN</strong></p><p>直接点：<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/History_API#replacestate_%E6%96%B9%E6%B3%95%E7%A4%BA%E4%BE%8B" target="_blank" >history.replaceState</a></p><p><strong>history.replaceState</strong></p><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">history.replaceState(stateObj, &quot;page 3&quot;, &quot;bar2.html&quot;);&#x2F;&#x2F; 注意点 history.replaceState, 会向url追加第三个参数，即使是相同的id,也会被追加。&#x2F;&#x2F; 例如：&#x2F;&#x2F; 初始 location.query 为 &#39;?time&#x3D;123456789&#39;&#x2F;&#x2F; history.replaceState(null, &quot;page 3&quot;, &quot;&amp;id&#x3D;1&quot;); &#x2F;&#x2F; 第一次调用 &#x2F;&#x2F; location.query 为 &#39;?time&#x3D;123456789&amp;id&#x3D;1&#39;&#x2F;&#x2F; history.replaceState(null, &quot;page 3&quot;, &quot;&amp;id&#x3D;1&quot;); &#x2F;&#x2F; 第二次调用&#x2F;&#x2F; location.query 为 &#39;?time&#x3D;123456789&amp;id&#x3D;1&amp;id&#x3D;1&#39;&#x2F;&#x2F; history.replaceState(null, &quot;page 3&quot;, &quot;&amp;id&#x3D;1&quot;); &#x2F;&#x2F; 第三次调用&#x2F;&#x2F; location.query 为 &#39;?time&#x3D;123456789&amp;id&#x3D;1&amp;id&#x3D;1&amp;id&#x3D;1&#39;</code></pre><h2 id="nextjs"><a href="#nextjs" class="headerlink" title="nextjs"></a>nextjs</h2><p>在nextjs中没有提供类似react-router-dom 中 <code>useSearchParams</code>这样的勾子</p><p><a href="https://reactrouter.com/en/main/hooks/use-search-params#usesearchparams" target="_blank" >useSearchParams</a></p><h2 id="假装我们不知道-replaceState"><a href="#假装我们不知道-replaceState" class="headerlink" title="假装我们不知道 replaceState"></a>假装我们不知道 replaceState</h2><p>如果要在 nextjs 中实现 <code>useSearchParams</code> 如何做呢？</p><p>会想到参考 <code>useSearchParams</code> 的源码实现</p><h2 id="下载源码搜下实现"><a href="#下载源码搜下实现" class="headerlink" title="下载源码搜下实现"></a>下载源码搜下实现</h2><h2 id="useSearchParams"><a href="#useSearchParams" class="headerlink" title="useSearchParams"></a>useSearchParams</h2><img src="http://t-blog-images.aijs.top/img/202210141716968.webp" /><!-- <img src="http://t-blog-images.aijs.top/img/202210141713394.webp" /> --><!-- <img src="http://t-blog-images.aijs.top/img/202210141714671.webp" /> --><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">&#x2F;&#x2F; packages&#x2F;react-router-dom&#x2F;index.tsx&#x2F;&#x2F; 调用 &#96;setSearchParams&#96; -&gt;  &#96;navigate&#96;-&gt;  &#96;let navigate &#x3D; useNavigate()&#96; -&gt; &#96;import &#123;  useNavigate&#125; from &quot;react-router&quot;;&#96;;</code></pre><p>到这里，要去找 <code>react-router 包中的  useNavigate</code>， 同一个代码仓库，不用切换项目</p><h2 id="useNavigate"><a href="#useNavigate" class="headerlink" title="useNavigate"></a>useNavigate</h2><p>同样方式，找到如下内容</p><img src="http://t-blog-images.aijs.top/img/202210141723899.webp" /><p>要去找下<code>NavigationContext</code>, React的 context，我们了解到，是<code>NavigationContext.Provider</code>提供的数据</p><h2 id="NavigationContext-Provider"><a href="#NavigationContext-Provider" class="headerlink" title="NavigationContext.Provider"></a>NavigationContext.Provider</h2><p>同样方式，找到如下内容</p><img src="http://t-blog-images.aijs.top/img/202210141727222.webp" /><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">&#x2F;&#x2F; packages&#x2F;react-router&#x2F;lib&#x2F;components.tsx&#x2F;&#x2F; 这里要注意，这是一个组件，再找下去要找 &lt;Router了，由React-router-dom包暴露的组件，可知道暴露了几个组件：</code></pre><h2 id="react-router-dom-暴露的组件"><a href="#react-router-dom-暴露的组件" class="headerlink" title="react-router-dom 暴露的组件"></a>react-router-dom 暴露的组件</h2><img src="http://t-blog-images.aijs.top/img/202210141735213.webp" /><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">import &#123; createBrowserHistory, createHashHistory &#125; from &quot;history&quot;; &#x2F;&#x2F; 这里 4&#x2F;&#x2F; ...export function BrowserRouter(&#123;  basename,  children,  window,&#125;: BrowserRouterProps) &#123;  let historyRef &#x3D; React.useRef&lt;BrowserHistory&gt;();  if (historyRef.current &#x3D;&#x3D; null) &#123;    historyRef.current &#x3D; createBrowserHistory(&#123; window &#125;); &#x2F;&#x2F; 这里 3  &#125;  let history &#x3D; historyRef.current; &#x2F;&#x2F; 这里 2  let [state, setState] &#x3D; React.useState(&#123;    action: history.action,    location: history.location,  &#125;);  React.useLayoutEffect(() &#x3D;&gt; history.listen(setState), [history]);  return (    &lt;Router      basename&#x3D;&#123;basename&#125;      children&#x3D;&#123;children&#125;      location&#x3D;&#123;state.location&#125;      navigationType&#x3D;&#123;state.action&#125;      navigator&#x3D;&#123;history&#125; &#x2F;&#x2F; 这里 1    &#x2F;&gt;  );&#125;</code></pre><p>最终发现到了 <code>history</code>库中</p><h2 id="createBrowserHistory"><a href="#createBrowserHistory" class="headerlink" title="createBrowserHistory"></a>createBrowserHistory</h2><p>同样方式，找到如下内容</p><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export function createBrowserHistory(&#123; window &#x3D; document.defaultView &#125; &#x3D; &#123;&#125;) &#123;  let globalHistory &#x3D; window.history; &#x2F;&#x2F; &#x2F;&#x2F; 这里 4  &#x2F;&#x2F; 获取第几个，和 location 信息  &#x2F;&#x2F; ...  function replace(to, state) &#123; &#x2F;&#x2F; 这里 2    let nextAction &#x3D; ReplaceAction;    let nextLocation &#x3D; getNextLocation(to, state);    function retry() &#123;      replace(to, state);    &#125;    if (allowTx(nextAction, nextLocation, retry)) &#123;      let [historyState, url] &#x3D; getHistoryStateAndUrl(nextLocation, index);      &#x2F;&#x2F; TODO: Support forced reloading      globalHistory.replaceState(historyState, null, url); &#x2F;&#x2F; 这里 3      applyTx(nextAction);    &#125;  &#125;  function go(n) &#123;    globalHistory.go(n);  &#125;  let history &#x3D; &#123;    get action() &#123;      return action;    &#125;,    get location() &#123;      return location;    &#125;,    createHref,    push,    replace, &#x2F;&#x2F; 这里 1    go,    back() &#123;      go(-1);    &#125;,    forward() &#123;      go(1);    &#125;,    listen(fn) &#123;      return listeners.push(fn);    &#125;,    block(fn) &#123;      let unblock &#x3D; blockers.push(fn);      if (blockers.length &#x3D;&#x3D;&#x3D; 1) &#123;        window.addEventListener(BeforeUnloadEventType, promptBeforeUnload);      &#125;      return function() &#123;        unblock();        &#x2F;&#x2F; Remove the beforeunload listener so the document may        &#x2F;&#x2F; still be salvageable in the pagehide event.        &#x2F;&#x2F; See https:&#x2F;&#x2F;html.spec.whatwg.org&#x2F;#unloading-documents        if (!blockers.length) &#123;          window.removeEventListener(BeforeUnloadEventType, promptBeforeUnload);        &#125;      &#125;;    &#125;  &#125;;  return history;&#125;</code></pre><p>最终发现调用的是 <code> window.history.replaceState(historyState, null, url)</code></p><h2 id="假装我们刚知道"><a href="#假装我们刚知道" class="headerlink" title="假装我们刚知道"></a>假装我们刚知道</h2><p>Oh~,原来如此呀</p><h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p><code>useNavigate</code> </p><p>这个hook内部获取了 <code> let &#123; basename, navigator &#125; = React.useContext(NavigationContext);</code>, </p><p><code>NavigationContext.Provider</code>是最外层提供的，所以，在其他地方使用 <code>useNavigate</code> 直接能拿到 <code>navigator</code>,不需要通过<code>React.useContext(NavigationContext)</code>的方式获取</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> React </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> React </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>React Cache</title>
+      <link href="//post/2022-10-14react-cache.html"/>
+      <url>//post/2022-10-14react-cache.html</url>
+      
+        <content type="html"><![CDATA[<h2 id="暂时没空看，先记录"><a href="#暂时没空看，先记录" class="headerlink" title="暂时没空看，先记录"></a>暂时没空看，先记录</h2><h2 id="react-router-saveScrollPosition"><a href="#react-router-saveScrollPosition" class="headerlink" title="react-router saveScrollPosition"></a>react-router saveScrollPosition</h2><p><a href="https://github.com/remix-run/react-router/blob/892238bee052177e78012167c088290b06400206/packages/router/router.ts#L814" target="_blank" >saveScrollPosition</a></p><h2 id="react-router-cache-route"><a href="#react-router-cache-route" class="headerlink" title="react-router-cache-route"></a>react-router-cache-route</h2><p><a href="https://github.com/CJY0208/react-router-cache-route" target="_blank" >https://github.com/CJY0208/react-router-cache-route</a></p><h2 id="react-activation"><a href="#react-activation" class="headerlink" title="react-activation"></a>react-activation</h2><p><code>&lt;KeepAlive /&gt;</code> only</p><p><a href="https://github.com/CJY0208/react-activation" target="_blank" >https://github.com/CJY0208/react-activation</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> React </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> React </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>好记性不如“实时笔记”</title>
       <link href="//post/2022-10-13record.html"/>
       <url>//post/2022-10-13record.html</url>
@@ -45,9 +95,9 @@
       
         <tags>
             
-            <tag> 工具 </tag>
-            
             <tag> 增效 </tag>
+            
+            <tag> 工具 </tag>
             
         </tags>
       
@@ -60,7 +110,7 @@
       <link href="//post/2022-10-10react-link.html"/>
       <url>//post/2022-10-10react-link.html</url>
       
-        <content type="html"><![CDATA[<h2 id="收录链接1"><a href="#收录链接1" class="headerlink" title="收录链接1"></a>收录链接1</h2><p><a href="https://juejin.cn/post/7014775797596553230" target="_blank">React17源码解析(开篇) —— 搭建 react 源码调试环境</a></p><p><a href="https://juejin.cn/post/7015853155367780383" target="_blank">React17源码解析(1) —— 源码目录及 react 架构</a></p><p><a href="https://juejin.cn/post/7015855371847729166" target="_blank">React17源码解析(2) —— jsx 转换及 React.createElement</a></p><p><a href="https://juejin.cn/post/7016512949330116645" target="_blank">React17源码解析(3) —— 深入理解 fiber</a></p><p><a href="https://juejin.cn/post/7019254208830373902" target="_blank">React17源码解析(4) —— 详解 render 阶段(scheduler 和 reconciler)</a></p><p><a href="https://juejin.cn/post/7020595059095666724" target="_blank">React17源码解析(5) —— 全面理解diff算法</a></p><p><a href="https://juejin.cn/post/7022816775188250660" target="_blank">React17源码解析(6) —— commit 阶段</a></p><p><a href="https://juejin.cn/post/7023568411963686920" target="_blank">React17源码解析(7) —— 一文搞懂 hooks 原理</a></p><p><a href="https://juejin.cn/post/7030673003583111176" target="_blank">🚀 万字好文 —— 手把手教你实现史上功能最丰富的简易版 react</a></p><p><strong>爬取掘金专栏收录文章脚本</strong></p><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">const list &#x3D; document.getElementsByClassName(&#39;title-row&#39;)Array.from(list).sort(()&#x3D;&gt; -1)&#x2F;*反向排序 *&#x2F;.forEach(item&#x3D;&gt; &#123;    const linkdom &#x3D; item.children[0]    const lk &#x3D; &#96;&lt;a href&#x3D;$&#123;linkdom.href&#125; target&#x3D;&quot;_blank&quot; &gt;$&#123;linkdom.title&#125;&lt;&#x2F;a&gt;\n&#96;    document.write(lk)&#125;)</code></pre><img src="http://t-blog-images.aijs.top/img/202210101827397.webp" style="max-width:100%; width: 500px" /><h2 id="收录链接2"><a href="#收录链接2" class="headerlink" title="收录链接2"></a>收录链接2</h2><p><a href="https://react.jokcy.me/book/api/react-structure.html" target="_blank" >react-structure</a></p><p><a href="https://lilixikun.github.io/blog/" target="_blank" >lilixikun</a></p><h2 id="updateQueue-环形链表"><a href="#updateQueue-环形链表" class="headerlink" title="updateQueue 环形链表"></a>updateQueue 环形链表</h2><p><strong>为什么使用环形链表：</strong></p><p><strong>普通链表</strong></p><ul><li>如果只保存首节点的指针，则每次插入时需要先进行一次遍历找到尾节点，再进行插入。</li><li>要么就需要保存首尾节点的指针。</li><li><strong>环形链表</strong></li></ul><p>而<em>环形链表的尾节点的下一个节点就是首节点</em>，因此只需要保存一个尾节点就<em>可以做到既方便插入、又方便访问首节点</em></p><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">UpdateQueue&lt;State&gt; &#x3D; &#123;  &#x2F;&#x2F; 这三个baseState是有更新被跳过时候才产生  baseState: State, &#x2F;&#x2F; baseState 指向被跳过的首个元素之前的所有 update 计算出的最终状态  firstBaseUpdate: Update&lt;State&gt;, &#x2F;&#x2F; firstBaseUpdate 指向被跳过的首个 update  lastBaseUpdate: Update&lt;State&gt;, &#x2F;&#x2F; lastBaseUpdate，只要有 update 被跳过，那么它一定指向本次更新的 update 中的最后一个  shared: SharedQueue&lt;State&gt;, &#x2F;&#x2F; 单环链表 真正存放 update 的链表的属性  effects: Array&lt;Update&lt;State&gt;&gt;&#125;;type SharedQueue&lt;State&gt; &#x3D; &#123;  pending: Update&lt;State&gt; | null,&#125;;</code></pre><h2 id="firstBaseUpdate-以及-lastBaseUpdate-形成的单链表"><a href="#firstBaseUpdate-以及-lastBaseUpdate-形成的单链表" class="headerlink" title="firstBaseUpdate 以及 lastBaseUpdate 形成的单链表"></a>firstBaseUpdate 以及 lastBaseUpdate 形成的单链表</h2><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">let pendingQueue &#x3D; queue.shared.pending; &#x2F;&#x2F;  (取一个节点)&#x2F;&#x2F; 将 pending 设为空，表示这些 pending 已经处理过queue.shared.pending &#x3D; null; const lastPendingUpdate &#x3D; pendingQueue; &#x2F;&#x2F; pending 的最后一个 udpdateconst firstPendingUpdate &#x3D; lastPendingUpdate.next; &#x2F;&#x2F; pending 的第一个 update&#x2F;&#x2F; 剪开环，使最后一个 update 不再指向第一个 updatelastPendingUpdate.next &#x3D; null; if (lastBaseUpdate &#x3D;&#x3D;&#x3D; null) &#123; &#x2F;&#x2F;   firstBaseUpdate &#x3D; firstPendingUpdate;&#125; else &#123;  &#x2F;&#x2F; 如果上一次有跳过的 update，那么 baseUpdate 链表不为空  &#x2F;&#x2F; 需要将 pending 的第一个 update 接上 baseUpdate  lastBaseUpdate.next &#x3D; firstPendingUpdate;&#125;&#x2F;&#x2F; 将 lastBaseUpdate 赋值为 lastPendingUpdate &#x2F;&#x2F; 此时已经形成了 以 firstBaseUpdate 为头以 lastBaseUpdate 为尾的新链表&#x2F;&#x2F; 也即为本次需要处理的 update 链表lastBaseUpdate &#x3D; lastPendingUpdate;</code></pre><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://juejin.cn/post/7093082885363597349" target="_blank" >React Fiber - updateQueue 原理分析</a></p><p><a href="https://juejin.cn/post/7019254208830373902" target="_blank" >React17源码解析(4) —— 详解 render 阶段(scheduler 和 reconciler)</a><br><a href="https://blog.csdn.net/qq_39583550/article/details/125905341" target="_blank" >见</a></p><h2 id="待学习源码"><a href="#待学习源码" class="headerlink" title="待学习源码"></a>待学习源码</h2><p><a href="https://github.com/baozouai/react-source-study" target="_blank" >react-source-study, 这老铁掘金文章写跑题了，蹭热度，不晓得，代码如何～，先收着</a></p>]]></content>
+        <content type="html"><![CDATA[<h2 id="收录链接1"><a href="#收录链接1" class="headerlink" title="收录链接1"></a>收录链接1</h2><p><a href="https://juejin.cn/post/7014775797596553230" target="_blank">React17源码解析(开篇) —— 搭建 react 源码调试环境</a></p><p><a href="https://juejin.cn/post/7015853155367780383" target="_blank">React17源码解析(1) —— 源码目录及 react 架构</a></p><p><a href="https://juejin.cn/post/7015855371847729166" target="_blank">React17源码解析(2) —— jsx 转换及 React.createElement</a></p><p><a href="https://juejin.cn/post/7016512949330116645" target="_blank">React17源码解析(3) —— 深入理解 fiber</a></p><p><a href="https://juejin.cn/post/7019254208830373902" target="_blank">React17源码解析(4) —— 详解 render 阶段(scheduler 和 reconciler)</a></p><p><a href="https://juejin.cn/post/7020595059095666724" target="_blank">React17源码解析(5) —— 全面理解diff算法</a></p><p><a href="https://juejin.cn/post/7022816775188250660" target="_blank">React17源码解析(6) —— commit 阶段</a></p><p><a href="https://juejin.cn/post/7023568411963686920" target="_blank">React17源码解析(7) —— 一文搞懂 hooks 原理</a></p><p><a href="https://juejin.cn/post/7030673003583111176" target="_blank">🚀 万字好文 —— 手把手教你实现史上功能最丰富的简易版 react</a></p><p>从上面了解到：</p><ol><li>几种数据类型之间的关系<code>Fiber</code>、 <code>Effect</code>、 <code>Hook</code>、 <code>Update</code>、 <code>UpdateQueue</code></li><li>“如何触发React调度更新”</li><li>“diff算法”的大概是什么</li><li>“React Fiber 树如何被更新成DOM的”</li></ol><h2 id="收录链接2"><a href="#收录链接2" class="headerlink" title="收录链接2"></a>收录链接2</h2><p><strong>看完上面的文章，会有这个疑惑：</strong></p><p>我们的代码是如何进入React调度流程的（例如：写了一个组件，这个组件如何变成 workInProgressFiber的一部分）</p><p><a href="https://juejin.cn/post/7016512949330116645" target="_blank">React17源码解析(3) —— 深入理解 fiber</a>仅有一行描述：“每个节点开始创建时，执行 beginWork 流程，直至该节点的所有子孙节点都创建(更新)完成后，执行 completeWork 流程”。 因跳过了太多的细节，即使最后给了下面这么一幅图，也看的云里雾里</p><img src="http://t-blog-images.aijs.top/img/202210140926842.webp" /><p><strong>下面这两个链接详细阐述了整个过程</strong></p><p><a href="https://zhuanlan.zhihu.com/p/525244896" target="_blank" >见</a></p><p><a href="https://blog.51cto.com/u_15127625/3316937" target="_blank" >Fiber 树的构建</a></p><p><strong>爬取掘金专栏收录文章脚本</strong></p><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">const list &#x3D; document.getElementsByClassName(&#39;title-row&#39;)Array.from(list).sort(()&#x3D;&gt; -1)&#x2F;*反向排序 *&#x2F;.forEach(item&#x3D;&gt; &#123;    const linkdom &#x3D; item.children[0]    const lk &#x3D; &#96;&lt;a href&#x3D;$&#123;linkdom.href&#125; target&#x3D;&quot;_blank&quot; &gt;$&#123;linkdom.title&#125;&lt;&#x2F;a&gt;\n&#96;    document.write(lk)&#125;)</code></pre><img src="http://t-blog-images.aijs.top/img/202210101827397.webp" style="max-width:100%; width: 500px" /><h2 id="收录链接3"><a href="#收录链接3" class="headerlink" title="收录链接3"></a>收录链接3</h2><p><a href="https://react.jokcy.me/book/api/react-structure.html" target="_blank" >react-structure</a></p><p><a href="https://lilixikun.github.io/blog/" target="_blank" >lilixikun</a></p><h2 id="updateQueue-环形链表"><a href="#updateQueue-环形链表" class="headerlink" title="updateQueue 环形链表"></a>updateQueue 环形链表</h2><p><strong>为什么使用环形链表：</strong></p><p><strong>普通链表</strong></p><ul><li>如果只保存首节点的指针，则每次插入时需要先进行一次遍历找到尾节点，再进行插入。</li><li>要么就需要保存首尾节点的指针。</li><li><strong>环形链表</strong></li></ul><p>而<em>环形链表的尾节点的下一个节点就是首节点</em>，因此只需要保存一个尾节点就<em>可以做到既方便插入、又方便访问首节点</em></p><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">UpdateQueue&lt;State&gt; &#x3D; &#123;  &#x2F;&#x2F; 这三个baseState是有更新被跳过时候才产生  baseState: State, &#x2F;&#x2F; baseState 指向被跳过的首个元素之前的所有 update 计算出的最终状态  firstBaseUpdate: Update&lt;State&gt;, &#x2F;&#x2F; firstBaseUpdate 指向被跳过的首个 update  lastBaseUpdate: Update&lt;State&gt;, &#x2F;&#x2F; lastBaseUpdate，只要有 update 被跳过，那么它一定指向本次更新的 update 中的最后一个  shared: SharedQueue&lt;State&gt;, &#x2F;&#x2F; 单环链表 真正存放 update 的链表的属性  effects: Array&lt;Update&lt;State&gt;&gt;&#125;;type SharedQueue&lt;State&gt; &#x3D; &#123;  pending: Update&lt;State&gt; | null,&#125;;</code></pre><h2 id="firstBaseUpdate-以及-lastBaseUpdate-形成的单链表"><a href="#firstBaseUpdate-以及-lastBaseUpdate-形成的单链表" class="headerlink" title="firstBaseUpdate 以及 lastBaseUpdate 形成的单链表"></a>firstBaseUpdate 以及 lastBaseUpdate 形成的单链表</h2><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">let pendingQueue &#x3D; queue.shared.pending; &#x2F;&#x2F;  (取一个节点)&#x2F;&#x2F; 将 pending 设为空，表示这些 pending 已经处理过queue.shared.pending &#x3D; null; const lastPendingUpdate &#x3D; pendingQueue; &#x2F;&#x2F; pending 的最后一个 udpdateconst firstPendingUpdate &#x3D; lastPendingUpdate.next; &#x2F;&#x2F; pending 的第一个 update&#x2F;&#x2F; 剪开环，使最后一个 update 不再指向第一个 updatelastPendingUpdate.next &#x3D; null; if (lastBaseUpdate &#x3D;&#x3D;&#x3D; null) &#123; &#x2F;&#x2F;   firstBaseUpdate &#x3D; firstPendingUpdate;&#125; else &#123;  &#x2F;&#x2F; 如果上一次有跳过的 update，那么 baseUpdate 链表不为空  &#x2F;&#x2F; 需要将 pending 的第一个 update 接上 baseUpdate  lastBaseUpdate.next &#x3D; firstPendingUpdate;&#125;&#x2F;&#x2F; 将 lastBaseUpdate 赋值为 lastPendingUpdate &#x2F;&#x2F; 此时已经形成了 以 firstBaseUpdate 为头以 lastBaseUpdate 为尾的新链表&#x2F;&#x2F; 也即为本次需要处理的 update 链表lastBaseUpdate &#x3D; lastPendingUpdate;</code></pre><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://juejin.cn/post/7093082885363597349" target="_blank" >React Fiber - updateQueue 原理分析</a></p><p><a href="https://juejin.cn/post/7019254208830373902" target="_blank" >React17源码解析(4) —— 详解 render 阶段(scheduler 和 reconciler)</a><br><a href="https://blog.csdn.net/qq_39583550/article/details/125905341" target="_blank" >见</a></p><h2 id="待学习源码"><a href="#待学习源码" class="headerlink" title="待学习源码"></a>待学习源码</h2><p><a href="https://github.com/baozouai/react-source-study" target="_blank" >react-source-study, 这老铁掘金文章写跑题了，蹭热度，不晓得，代码如何～，先收着</a></p>]]></content>
       
       
       <categories>
@@ -2780,9 +2830,9 @@
       
         <tags>
             
-            <tag> 工具 </tag>
-            
             <tag> 增效 </tag>
+            
+            <tag> 工具 </tag>
             
             <tag> vscode </tag>
             
@@ -3765,9 +3815,9 @@
       
         <tags>
             
-            <tag> 工具 </tag>
-            
             <tag> 增效 </tag>
+            
+            <tag> 工具 </tag>
             
             <tag> vscode </tag>
             
@@ -3872,6 +3922,33 @@
     
     
     <entry>
+      <title>批量删除目录</title>
+      <link href="//post/2019-10-30shell.html"/>
+      <url>//post/2019-10-30shell.html</url>
+      
+        <content type="html"><![CDATA[<h2 id="删除某个目录下所有子目录的-node-modules"><a href="#删除某个目录下所有子目录的-node-modules" class="headerlink" title="删除某个目录下所有子目录的 node_modules"></a>删除某个目录下所有子目录的 node_modules</h2><ul><li>查找 &#x2F;tmp&#x2F;test&#x2F; 子目录下所有 modu 执行删除</li></ul><pre class="line-numbers language-none"><code class="language-none">find &#x2F;tmp&#x2F;test&#x2F; -type d -name modu |xargs rm -rf</code></pre><ul><li>查找 &#x2F;tmp&#x2F;test&#x2F; 子目录下所有 node_modules 执行删除</li></ul><pre class="line-numbers language-none"><code class="language-none">find &#x2F;tmp&#x2F;test&#x2F; -type d -name node_modules |xargs rm -rf</code></pre><ul><li>查找 当前目录下 子目录下所有 node_modules 执行删除</li></ul><pre class="line-numbers language-none"><code class="language-none">find .&#x2F; -type d -name node_modules |xargs rm -rf</code></pre><p><a href="https://www.cnblogs.com/w-j-q/p/14863810.html" target="_blank" >见 find 命令</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 工具 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Shell </tag>
+            
+            <tag> 增效 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Git public key</title>
       <link href="//post/2016-06-20git.html"/>
       <url>//post/2016-06-20git.html</url>
@@ -3913,36 +3990,9 @@
       
         <tags>
             
+            <tag> 增效 </tag>
+            
             <tag> 工具 </tag>
-            
-            <tag> 增效 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>批量删除目录</title>
-      <link href="//post/2019-10-30shell.html"/>
-      <url>//post/2019-10-30shell.html</url>
-      
-        <content type="html"><![CDATA[<h2 id="删除某个目录下所有子目录的-node-modules"><a href="#删除某个目录下所有子目录的-node-modules" class="headerlink" title="删除某个目录下所有子目录的 node_modules"></a>删除某个目录下所有子目录的 node_modules</h2><ul><li>查找 &#x2F;tmp&#x2F;test&#x2F; 子目录下所有 modu 执行删除</li></ul><pre class="line-numbers language-none"><code class="language-none">find &#x2F;tmp&#x2F;test&#x2F; -type d -name modu |xargs rm -rf</code></pre><ul><li>查找 &#x2F;tmp&#x2F;test&#x2F; 子目录下所有 node_modules 执行删除</li></ul><pre class="line-numbers language-none"><code class="language-none">find &#x2F;tmp&#x2F;test&#x2F; -type d -name node_modules |xargs rm -rf</code></pre><ul><li>查找 当前目录下 子目录下所有 node_modules 执行删除</li></ul><pre class="line-numbers language-none"><code class="language-none">find .&#x2F; -type d -name node_modules |xargs rm -rf</code></pre><p><a href="https://www.cnblogs.com/w-j-q/p/14863810.html" target="_blank" >见 find 命令</a></p>]]></content>
-      
-      
-      <categories>
-          
-          <category> 工具 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 增效 </tag>
-            
-            <tag> Shell </tag>
             
         </tags>
       
